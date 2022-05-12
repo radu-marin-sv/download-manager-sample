@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class DocumentAdapter : ListAdapter<Document, DocumentAdapter.DocumentViewHolder>(DiffCallback()) {
+class DocumentAdapter(
+    private val onDocumentTap: (Document) -> Unit
+) : ListAdapter<Document, DocumentAdapter.DocumentViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocumentViewHolder {
         return DocumentViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.view_document, parent, false)
@@ -19,9 +21,13 @@ class DocumentAdapter : ListAdapter<Document, DocumentAdapter.DocumentViewHolder
         holder.bind(getItem(position))
     }
 
-    class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(document: Document) {
-            (itemView as TextView).text = "${document.title}:\n ${document.uri}"
+            (itemView as TextView).text = "${document.title}:\n ${document.status}"
+
+            itemView.setOnClickListener {
+                onDocumentTap(document)
+            }
         }
     }
 
